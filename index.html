@@ -13,7 +13,6 @@
   --cream: #FAF8F4;
   --warm-white: #F5F1EA;
   --parchment: #EDE8DE;
-  --blush: #E8D5C4;
   --rose: #C9A99A;
   --dusty-rose: #A67C72;
   --deep: #3D2B26;
@@ -123,8 +122,26 @@ body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--t
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
-.field input { width: 100%; height: 42px; border: 1px solid var(--light-border); border-radius: 8px; padding: 0 14px; font-size: 14px; font-family: 'Jost', sans-serif; background: white; color: var(--text); outline: none; transition: border-color 0.2s; }
-.field input:focus { border-color: var(--rose); }
+.field input, .field textarea {
+  width: 100%; border: 1px solid var(--light-border); border-radius: 8px; padding: 10px 14px;
+  font-size: 14px; font-family: 'Jost', sans-serif; background: white; color: var(--text);
+  outline: none; transition: border-color 0.2s;
+}
+.field input { height: 42px; }
+.field textarea { height: 70px; resize: none; line-height: 1.5; }
+.field input:focus, .field textarea:focus { border-color: var(--rose); }
+
+.section-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 18px 0 14px;
+}
+.section-divider span {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); white-space: nowrap;
+}
+.section-divider::before, .section-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--light-border);
+}
 
 .modal-footer { padding: 0 1.5rem 1.75rem; display: flex; gap: 8px; }
 .btn { height: 44px; border-radius: 22px; border: none; font-family: 'Jost', sans-serif; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; flex: 1; }
@@ -140,7 +157,7 @@ body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--t
 .detail-body { padding: 1.25rem 1.5rem; }
 .detail-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--deep); margin-bottom: 4px; }
 .detail-place { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; }
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
 .detail-card { background: white; border: 1px solid var(--light-border); border-radius: 10px; padding: 12px 14px; }
 .detail-card.full { grid-column: 1/-1; }
 .detail-card.accent { background: var(--deep); border-color: var(--deep); }
@@ -149,6 +166,32 @@ body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--t
 .detail-card-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--deep); }
 .detail-card.accent .detail-card-val { color: white; }
 .profit-val { color: var(--dusty-rose) !important; }
+
+.detail-info-block {
+  background: white;
+  border: 1px solid var(--light-border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.detail-info-block .detail-card-label { margin-bottom: 6px; }
+.detail-info-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.tonos-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tono-tag {
+  background: var(--warm-white);
+  border: 1px solid var(--light-border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
 
 .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--light-border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -203,9 +246,7 @@ function headers(extra) {
 function setSyncBar(state, msg) {
   const bar = document.getElementById('sync-bar');
   bar.className = 'sync-bar ' + state;
-  bar.innerHTML = state === 'syncing'
-    ? '<span class="spinner"></span>' + msg
-    : msg;
+  bar.innerHTML = state === 'syncing' ? '<span class="spinner"></span>' + msg : msg;
 }
 
 async function loadData() {
@@ -226,22 +267,20 @@ async function loadData() {
 }
 
 function backup() { localStorage.setItem('perfumes_backup', JSON.stringify(db)); }
-
 function fmt(n) { return '$' + (Number(n)||0).toLocaleString('es-CL'); }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function render() {
   const q = (document.getElementById('search').value||'').toLowerCase();
-  const list = q ? db.filter(p => (p.name+p.place).toLowerCase().includes(q)) : db;
+  const list = q ? db.filter(p => (p.name+p.place+(p.tonos||'')+(p.equivalencia||'')).toLowerCase().includes(q)) : db;
 
   const total = db.length;
   const units = db.reduce((s,p)=>s+(+p.units||0),0);
   const val = db.reduce((s,p)=>s+(+p.sell||0)*(+p.units||0),0);
   document.getElementById('s-total').textContent = total;
   document.getElementById('s-units').textContent = units;
-  document.getElementById('s-value').textContent = val >= 1000000
-    ? '$'+(val/1000000).toFixed(1)+'M' : fmt(val);
+  document.getElementById('s-value').textContent = val >= 1000000 ? '$'+(val/1000000).toFixed(1)+'M' : fmt(val);
 
   const grid = document.getElementById('grid');
   if (!list.length) {
@@ -271,7 +310,36 @@ function render() {
   }).join('');
 }
 
-// ── ADD ──
+function formBody(p) {
+  return `
+    <div class="img-upload" onclick="document.getElementById('imgfile').click()">
+      ${p && p.img ? `<img src="${p.img}">` : '<span class="upload-icon">📷</span>'}
+      <span class="upload-label" id="uplbl">${p && p.img ? 'Cambiar foto' : 'Agregar foto'}</span>
+    </div>
+    <input type="file" id="imgfile" accept="image/*" style="display:none" onchange="previewImg(event)">
+
+    <div class="field"><label>Nombre del perfume</label><input id="f-name" placeholder="Ej: Chanel N°5" value="${p ? escHtml(p.name) : ''}"></div>
+    <div class="form-row">
+      <div class="field"><label>Valor compra</label><input id="f-buy" type="number" placeholder="0" value="${p ? p.buy : ''}"></div>
+      <div class="field"><label>Valor venta</label><input id="f-sell" type="number" placeholder="0" value="${p ? p.sell : ''}"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Lugar de compra</label><input id="f-place" placeholder="Ej: Falabella" value="${p ? escHtml(p.place||'') : ''}"></div>
+      <div class="field"><label>Unidades</label><input id="f-units" type="number" placeholder="0" min="0" value="${p ? p.units : ''}"></div>
+    </div>
+
+    <div class="section-divider"><span>Detalles de fragancia</span></div>
+
+    <div class="field">
+      <label>Tonos / Notas</label>
+      <textarea id="f-tonos" placeholder="Ej: Floral, vainilla, almizcle, madera…">${p ? escHtml(p.tonos||'') : ''}</textarea>
+    </div>
+    <div class="field">
+      <label>Equivalencia con diseñador</label>
+      <textarea id="f-equivalencia" placeholder="Ej: Similar a Chanel Coco Mademoiselle…">${p ? escHtml(p.equivalencia||'') : ''}</textarea>
+    </div>`;
+}
+
 function openAdd() {
   _img = null;
   showModal(`
@@ -280,29 +348,14 @@ function openAdd() {
       <span class="modal-title">Nuevo perfume</span>
       <button class="btn-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="img-upload" onclick="document.getElementById('imgfile').click()">
-        <span class="upload-icon">📷</span>
-        <span class="upload-label" id="uplbl">Agregar foto</span>
-      </div>
-      <input type="file" id="imgfile" accept="image/*" style="display:none" onchange="previewImg(event,'uplbl')">
-      <div class="field"><label>Nombre del perfume</label><input id="f-name" placeholder="Ej: Chanel N°5" autocomplete="off"></div>
-      <div class="form-row">
-        <div class="field"><label>Valor compra</label><input id="f-buy" type="number" placeholder="0"></div>
-        <div class="field"><label>Valor venta</label><input id="f-sell" type="number" placeholder="0"></div>
-      </div>
-      <div class="form-row">
-        <div class="field"><label>Lugar de compra</label><input id="f-place" placeholder="Ej: Falabella"></div>
-        <div class="field"><label>Unidades</label><input id="f-units" type="number" placeholder="0" min="0"></div>
-      </div>
-    </div>
+    <div class="modal-body">${formBody(null)}</div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="saveNew()">Guardar</button>
     </div>`);
 }
 
-function previewImg(e, lblId) {
+function previewImg(e) {
   const f = e.target.files[0]; if (!f) return;
   const reader = new FileReader();
   reader.onload = ev => {
@@ -311,22 +364,28 @@ function previewImg(e, lblId) {
     let img = box.querySelector('img');
     if (!img) { img = document.createElement('img'); box.prepend(img); }
     img.src = _img;
-    document.getElementById(lblId).textContent = 'Cambiar foto';
+    document.getElementById('uplbl').textContent = 'Cambiar foto';
   };
   reader.readAsDataURL(f);
 }
 
-async function saveNew() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { document.getElementById('f-name').focus(); return; }
-  const item = {
-    id: uid(), name,
+function getFormData() {
+  return {
+    name: document.getElementById('f-name').value.trim(),
     buy: Number(document.getElementById('f-buy').value)||0,
     sell: Number(document.getElementById('f-sell').value)||0,
     place: document.getElementById('f-place').value.trim(),
     units: Number(document.getElementById('f-units').value)||0,
-    img: _img || null
+    tonos: document.getElementById('f-tonos').value.trim(),
+    equivalencia: document.getElementById('f-equivalencia').value.trim(),
+    img: _img
   };
+}
+
+async function saveNew() {
+  const data = getFormData();
+  if (!data.name) { document.getElementById('f-name').focus(); return; }
+  const item = Object.assign({ id: uid() }, data);
   closeModal();
   db.unshift(item); render(); backup();
   try {
@@ -334,13 +393,26 @@ async function saveNew() {
   } catch(e) { console.warn('Sync error', e); }
 }
 
-// ── DETAIL ──
 function openDetail(id) {
   const p = db.find(x => x.id === id); if (!p) return;
   const profit = (+p.sell||0) - (+p.buy||0);
   const photo = p.img
     ? `<div class="detail-photo"><img src="${p.img}" alt="${escHtml(p.name)}"></div>`
     : `<div class="detail-photo">🍶</div>`;
+
+  const tonosHtml = p.tonos
+    ? `<div class="detail-info-block">
+        <div class="detail-card-label">Tonos y notas</div>
+        <div class="tonos-tags">${p.tonos.split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="tono-tag">${escHtml(t)}</span>`).join('')}</div>
+        ${p.tonos.indexOf(',') === -1 ? `<div class="detail-info-text">${escHtml(p.tonos)}</div>` : ''}
+      </div>` : '';
+
+  const equivHtml = p.equivalencia
+    ? `<div class="detail-info-block">
+        <div class="detail-card-label">Equivalencia con diseñador</div>
+        <div class="detail-info-text">${escHtml(p.equivalencia)}</div>
+      </div>` : '';
+
   showModal(`
     <div class="modal-handle"></div>
     ${photo}
@@ -354,6 +426,8 @@ function openDetail(id) {
         <div class="detail-card"><div class="detail-card-label">Ganancia unit.</div><div class="detail-card-val profit-val">${fmt(profit)}</div></div>
         <div class="detail-card full accent"><div class="detail-card-label">Valor total en stock</div><div class="detail-card-val">${fmt((+p.sell||0)*(+p.units||0))}</div></div>
       </div>
+      ${tonosHtml}
+      ${equivHtml}
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger" onclick="deleteP('${p.id}')">Eliminar</button>
@@ -362,7 +436,6 @@ function openDetail(id) {
     </div>`);
 }
 
-// ── EDIT ──
 function openEdit(id) {
   const p = db.find(x => x.id === id); if (!p) return;
   _img = p.img || null;
@@ -372,22 +445,7 @@ function openEdit(id) {
       <span class="modal-title">Editar perfume</span>
       <button class="btn-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body">
-      <div class="img-upload" onclick="document.getElementById('imgfile2').click()">
-        ${p.img ? `<img src="${p.img}">` : '<span class="upload-icon">📷</span>'}
-        <span class="upload-label" id="uplbl2">${p.img ? 'Cambiar foto' : 'Agregar foto'}</span>
-      </div>
-      <input type="file" id="imgfile2" accept="image/*" style="display:none" onchange="previewImg(event,'uplbl2')">
-      <div class="field"><label>Nombre del perfume</label><input id="f-name" value="${escHtml(p.name)}"></div>
-      <div class="form-row">
-        <div class="field"><label>Valor compra</label><input id="f-buy" type="number" value="${p.buy}"></div>
-        <div class="field"><label>Valor venta</label><input id="f-sell" type="number" value="${p.sell}"></div>
-      </div>
-      <div class="form-row">
-        <div class="field"><label>Lugar de compra</label><input id="f-place" value="${escHtml(p.place||'')}"></div>
-        <div class="field"><label>Unidades</label><input id="f-units" type="number" value="${p.units||0}"></div>
-      </div>
-    </div>
+    <div class="modal-body">${formBody(p)}</div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="saveEdit('${p.id}')">Guardar</button>
@@ -395,21 +453,13 @@ function openEdit(id) {
 }
 
 async function saveEdit(id) {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { document.getElementById('f-name').focus(); return; }
-  const updates = {
-    name,
-    buy: Number(document.getElementById('f-buy').value)||0,
-    sell: Number(document.getElementById('f-sell').value)||0,
-    place: document.getElementById('f-place').value.trim(),
-    units: Number(document.getElementById('f-units').value)||0,
-    img: _img
-  };
+  const data = getFormData();
+  if (!data.name) { document.getElementById('f-name').focus(); return; }
   const i = db.findIndex(x => x.id === id);
-  if (i > -1) db[i] = Object.assign({}, db[i], updates);
+  if (i > -1) db[i] = Object.assign({}, db[i], data);
   closeModal(); render(); backup();
   try {
-    await fetch(API + '?id=eq.' + id, { method:'PATCH', headers: headers({'Prefer':'return=minimal'}), body: JSON.stringify(updates) });
+    await fetch(API + '?id=eq.' + id, { method:'PATCH', headers: headers({'Prefer':'return=minimal'}), body: JSON.stringify(data) });
   } catch(e) { console.warn('Sync error', e); }
 }
 
