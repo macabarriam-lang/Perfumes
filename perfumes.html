@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Inventario de Perfumes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FAF8F4;
+  --warm-white: #F5F1EA;
+  --parchment: #EDE8DE;
+  --blush: #E8D5C4;
+  --rose: #C9A99A;
+  --dusty-rose: #A67C72;
+  --deep: #3D2B26;
+  --text: #4A3530;
+  --muted: #8C736D;
+  --light-border: #DDD5C8;
+  --gold: #B89A7A;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+.site-header {
+  background: var(--deep);
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 120%, rgba(184,154,122,0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-ornament {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
+}
+.site-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 32px;
+  letter-spacing: 0.15em;
+  color: #FAF8F4;
+  text-transform: uppercase;
+}
+.header-line { width: 40px; height: 1px; background: var(--gold); margin: 10px auto 0; }
+
+.stats-bar { display: flex; justify-content: center; background: var(--warm-white); border-bottom: 1px solid var(--light-border); }
+.stat-item { flex: 1; max-width: 160px; padding: 14px 8px; text-align: center; border-right: 1px solid var(--light-border); }
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--deep); line-height: 1; }
+.stat-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+
+.toolbar { padding: 1rem 1.25rem; display: flex; gap: 8px; align-items: center; background: var(--cream); border-bottom: 1px solid var(--light-border); }
+.search-wrap { flex: 1; position: relative; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; }
+.toolbar input { width: 100%; height: 40px; border: 1px solid var(--light-border); border-radius: 20px; padding: 0 14px 0 36px; font-size: 14px; font-family: 'Jost', sans-serif; background: white; color: var(--text); outline: none; transition: border-color 0.2s; }
+.toolbar input:focus { border-color: var(--rose); }
+.toolbar input::placeholder { color: var(--muted); }
+.btn-add { height: 40px; width: 40px; border-radius: 50%; border: none; background: var(--deep); color: white; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; line-height: 1; }
+.btn-add:hover { background: var(--dusty-rose); }
+
+.sync-bar { text-align: center; font-size: 11px; letter-spacing: 0.06em; padding: 6px; background: #f0ede6; color: var(--muted); border-bottom: 1px solid var(--light-border); }
+.sync-bar.syncing { color: var(--gold); }
+.sync-bar.error { color: #C0604A; background: #FDF0EC; }
+
+.grid { padding: 1.25rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; }
+@media(min-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 18px; } }
+
+.card { background: white; border: 1px solid var(--light-border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(61,43,38,0.1); }
+.card-photo { width: 100%; aspect-ratio: 1; background: var(--parchment); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.card-photo img { width: 100%; height: 100%; object-fit: cover; }
+.card-photo .no-img { font-size: 38px; opacity: 0.5; }
+.card-body { padding: 12px 12px 14px; }
+.card-name { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 500; color: var(--deep); margin-bottom: 2px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-place { font-size: 11px; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-divider { height: 1px; background: var(--light-border); margin-bottom: 8px; }
+.card-prices { display: flex; justify-content: space-between; align-items: center; }
+.price-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.price-val { font-size: 13px; font-weight: 500; color: var(--deep); }
+.price-val.sell { color: var(--dusty-rose); }
+
+.empty-state { grid-column: 1/-1; text-align: center; padding: 4rem 2rem; }
+.empty-icon { font-size: 52px; margin-bottom: 16px; opacity: 0.45; }
+.empty-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; font-style: italic; color: var(--muted); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; color: var(--muted); }
+
+.overlay { display: none; position: fixed; inset: 0; background: rgba(30,18,15,0.5); z-index: 100; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
+.overlay.open { display: flex; }
+@media(min-width: 600px) { .overlay { align-items: center; } }
+
+.modal { background: var(--cream); border-radius: 20px 20px 0 0; width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+@media(min-width: 600px) { .modal { border-radius: 16px; max-height: 88vh; } }
+@keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-handle { width: 36px; height: 4px; background: var(--light-border); border-radius: 2px; margin: 12px auto 0; }
+@media(min-width: 600px) { .modal-handle { display: none; } }
+.modal-header { padding: 16px 1.5rem 0; display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--deep); letter-spacing: 0.04em; }
+.btn-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--light-border); background: white; color: var(--muted); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.modal-body { padding: 1.25rem 1.5rem 1.5rem; }
+
+.img-upload { width: 100%; height: 130px; border: 1.5px dashed var(--light-border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 1.25rem; position: relative; overflow: hidden; background: var(--warm-white); transition: border-color 0.2s; gap: 6px; }
+.img-upload:hover { border-color: var(--rose); }
+.img-upload img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.img-upload .upload-label { position: relative; z-index: 1; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: rgba(250,248,244,0.9); padding: 5px 12px; border-radius: 20px; }
+.upload-icon { font-size: 22px; position: relative; z-index: 1; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.field input { width: 100%; height: 42px; border: 1px solid var(--light-border); border-radius: 8px; padding: 0 14px; font-size: 14px; font-family: 'Jost', sans-serif; background: white; color: var(--text); outline: none; transition: border-color 0.2s; }
+.field input:focus { border-color: var(--rose); }
+
+.modal-footer { padding: 0 1.5rem 1.75rem; display: flex; gap: 8px; }
+.btn { height: 44px; border-radius: 22px; border: none; font-family: 'Jost', sans-serif; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; flex: 1; }
+.btn-ghost { background: white; border: 1px solid var(--light-border); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--rose); color: var(--dusty-rose); }
+.btn-primary { background: var(--deep); color: white; }
+.btn-primary:hover { background: var(--dusty-rose); }
+.btn-danger { background: white; border: 1px solid #F0C4B8; color: #C0604A; max-width: 110px; }
+.btn-danger:hover { background: #FDF0EC; }
+
+.detail-photo { width: 100%; height: 200px; background: var(--parchment); display: flex; align-items: center; justify-content: center; font-size: 64px; overflow: hidden; }
+.detail-photo img { width: 100%; height: 100%; object-fit: cover; }
+.detail-body { padding: 1.25rem 1.5rem; }
+.detail-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--deep); margin-bottom: 4px; }
+.detail-place { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
+.detail-card { background: white; border: 1px solid var(--light-border); border-radius: 10px; padding: 12px 14px; }
+.detail-card.full { grid-column: 1/-1; }
+.detail-card.accent { background: var(--deep); border-color: var(--deep); }
+.detail-card-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.detail-card.accent .detail-card-label { color: rgba(255,255,255,0.6); }
+.detail-card-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--deep); }
+.detail-card.accent .detail-card-val { color: white; }
+.profit-val { color: var(--dusty-rose) !important; }
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--light-border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="header-ornament">✦ Colección ✦</span>
+  <h1>Inventario de Perfumes</h1>
+  <div class="header-line"></div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num" id="s-total">—</div><div class="stat-label">Perfumes</div></div>
+  <div class="stat-item"><div class="stat-num" id="s-units">—</div><div class="stat-label">Unidades</div></div>
+  <div class="stat-item"><div class="stat-num" id="s-value">—</div><div class="stat-label">Valor total</div></div>
+</div>
+
+<div id="sync-bar" class="sync-bar syncing"><span class="spinner"></span>Conectando…</div>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="search" id="search" placeholder="Buscar perfume…" oninput="render()">
+  </div>
+  <button class="btn-add" onclick="openAdd()" title="Agregar perfume">+</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay" onclick="onOverlayClick(event)">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://mfypcysouhzuwivkbolj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_hrMdC9yZ-iYu2ILJfMFcaA_xPTZzO3p';
+const API = SUPABASE_URL + '/rest/v1/perfumes';
+
+let db = [];
+let _img = null;
+
+function headers(extra) {
+  return Object.assign({
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    'Content-Type': 'application/json'
+  }, extra || {});
+}
+
+function setSyncBar(state, msg) {
+  const bar = document.getElementById('sync-bar');
+  bar.className = 'sync-bar ' + state;
+  bar.innerHTML = state === 'syncing'
+    ? '<span class="spinner"></span>' + msg
+    : msg;
+}
+
+async function loadData() {
+  try {
+    setSyncBar('syncing', 'Cargando perfumes…');
+    const res = await fetch(API + '?order=created_at.desc', { headers: headers() });
+    if (!res.ok) throw new Error('Error ' + res.status);
+    db = await res.json();
+    setSyncBar('', '✦ Sincronizado');
+    setTimeout(() => { document.getElementById('sync-bar').style.display = 'none'; }, 2000);
+    render();
+  } catch(e) {
+    setSyncBar('error', '⚠ Sin conexión — mostrando datos locales');
+    const local = localStorage.getItem('perfumes_backup');
+    db = local ? JSON.parse(local) : [];
+    render();
+  }
+}
+
+function backup() { localStorage.setItem('perfumes_backup', JSON.stringify(db)); }
+
+function fmt(n) { return '$' + (Number(n)||0).toLocaleString('es-CL'); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function render() {
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const list = q ? db.filter(p => (p.name+p.place).toLowerCase().includes(q)) : db;
+
+  const total = db.length;
+  const units = db.reduce((s,p)=>s+(+p.units||0),0);
+  const val = db.reduce((s,p)=>s+(+p.sell||0)*(+p.units||0),0);
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-units').textContent = units;
+  document.getElementById('s-value').textContent = val >= 1000000
+    ? '$'+(val/1000000).toFixed(1)+'M' : fmt(val);
+
+  const grid = document.getElementById('grid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🌸</div>
+      <div class="empty-title">${q ? 'Sin resultados' : 'Tu colección está vacía'}</div>
+      <div class="empty-sub">${q ? 'Intenta con otro nombre' : 'Toca + para agregar tu primer perfume'}</div>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const photo = p.img
+      ? `<div class="card-photo"><img src="${p.img}" alt="${escHtml(p.name)}" loading="lazy"></div>`
+      : `<div class="card-photo"><span class="no-img">🍶</span></div>`;
+    return `<div class="card" onclick="openDetail('${p.id}')">
+      ${photo}
+      <div class="card-body">
+        <div class="card-name">${escHtml(p.name)}</div>
+        <div class="card-place">${escHtml(p.place||'—')}</div>
+        <div class="card-divider"></div>
+        <div class="card-prices">
+          <div><div class="price-label">Compra</div><div class="price-val">${fmt(p.buy)}</div></div>
+          <div style="text-align:right"><div class="price-label">Venta</div><div class="price-val sell">${fmt(p.sell)}</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADD ──
+function openAdd() {
+  _img = null;
+  showModal(`
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">Nuevo perfume</span>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="img-upload" onclick="document.getElementById('imgfile').click()">
+        <span class="upload-icon">📷</span>
+        <span class="upload-label" id="uplbl">Agregar foto</span>
+      </div>
+      <input type="file" id="imgfile" accept="image/*" style="display:none" onchange="previewImg(event,'uplbl')">
+      <div class="field"><label>Nombre del perfume</label><input id="f-name" placeholder="Ej: Chanel N°5" autocomplete="off"></div>
+      <div class="form-row">
+        <div class="field"><label>Valor compra</label><input id="f-buy" type="number" placeholder="0"></div>
+        <div class="field"><label>Valor venta</label><input id="f-sell" type="number" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Lugar de compra</label><input id="f-place" placeholder="Ej: Falabella"></div>
+        <div class="field"><label>Unidades</label><input id="f-units" type="number" placeholder="0" min="0"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNew()">Guardar</button>
+    </div>`);
+}
+
+function previewImg(e, lblId) {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    _img = ev.target.result;
+    const box = document.querySelector('.img-upload');
+    let img = box.querySelector('img');
+    if (!img) { img = document.createElement('img'); box.prepend(img); }
+    img.src = _img;
+    document.getElementById(lblId).textContent = 'Cambiar foto';
+  };
+  reader.readAsDataURL(f);
+}
+
+async function saveNew() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  const item = {
+    id: uid(), name,
+    buy: Number(document.getElementById('f-buy').value)||0,
+    sell: Number(document.getElementById('f-sell').value)||0,
+    place: document.getElementById('f-place').value.trim(),
+    units: Number(document.getElementById('f-units').value)||0,
+    img: _img || null
+  };
+  closeModal();
+  db.unshift(item); render(); backup();
+  try {
+    await fetch(API, { method:'POST', headers: headers({'Prefer':'return=minimal'}), body: JSON.stringify(item) });
+  } catch(e) { console.warn('Sync error', e); }
+}
+
+// ── DETAIL ──
+function openDetail(id) {
+  const p = db.find(x => x.id === id); if (!p) return;
+  const profit = (+p.sell||0) - (+p.buy||0);
+  const photo = p.img
+    ? `<div class="detail-photo"><img src="${p.img}" alt="${escHtml(p.name)}"></div>`
+    : `<div class="detail-photo">🍶</div>`;
+  showModal(`
+    <div class="modal-handle"></div>
+    ${photo}
+    <div class="detail-body">
+      <div class="detail-name">${escHtml(p.name)}</div>
+      <div class="detail-place">${escHtml(p.place||'—')}</div>
+      <div class="detail-grid">
+        <div class="detail-card"><div class="detail-card-label">Valor compra</div><div class="detail-card-val">${fmt(p.buy)}</div></div>
+        <div class="detail-card"><div class="detail-card-label">Valor venta</div><div class="detail-card-val profit-val">${fmt(p.sell)}</div></div>
+        <div class="detail-card"><div class="detail-card-label">Unidades</div><div class="detail-card-val">${p.units||0}</div></div>
+        <div class="detail-card"><div class="detail-card-label">Ganancia unit.</div><div class="detail-card-val profit-val">${fmt(profit)}</div></div>
+        <div class="detail-card full accent"><div class="detail-card-label">Valor total en stock</div><div class="detail-card-val">${fmt((+p.sell||0)*(+p.units||0))}</div></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deleteP('${p.id}')">Eliminar</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>
+      <button class="btn btn-primary" onclick="openEdit('${p.id}')">Editar</button>
+    </div>`);
+}
+
+// ── EDIT ──
+function openEdit(id) {
+  const p = db.find(x => x.id === id); if (!p) return;
+  _img = p.img || null;
+  showModal(`
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">Editar perfume</span>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="img-upload" onclick="document.getElementById('imgfile2').click()">
+        ${p.img ? `<img src="${p.img}">` : '<span class="upload-icon">📷</span>'}
+        <span class="upload-label" id="uplbl2">${p.img ? 'Cambiar foto' : 'Agregar foto'}</span>
+      </div>
+      <input type="file" id="imgfile2" accept="image/*" style="display:none" onchange="previewImg(event,'uplbl2')">
+      <div class="field"><label>Nombre del perfume</label><input id="f-name" value="${escHtml(p.name)}"></div>
+      <div class="form-row">
+        <div class="field"><label>Valor compra</label><input id="f-buy" type="number" value="${p.buy}"></div>
+        <div class="field"><label>Valor venta</label><input id="f-sell" type="number" value="${p.sell}"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Lugar de compra</label><input id="f-place" value="${escHtml(p.place||'')}"></div>
+        <div class="field"><label>Unidades</label><input id="f-units" type="number" value="${p.units||0}"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEdit('${p.id}')">Guardar</button>
+    </div>`);
+}
+
+async function saveEdit(id) {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  const updates = {
+    name,
+    buy: Number(document.getElementById('f-buy').value)||0,
+    sell: Number(document.getElementById('f-sell').value)||0,
+    place: document.getElementById('f-place').value.trim(),
+    units: Number(document.getElementById('f-units').value)||0,
+    img: _img
+  };
+  const i = db.findIndex(x => x.id === id);
+  if (i > -1) db[i] = Object.assign({}, db[i], updates);
+  closeModal(); render(); backup();
+  try {
+    await fetch(API + '?id=eq.' + id, { method:'PATCH', headers: headers({'Prefer':'return=minimal'}), body: JSON.stringify(updates) });
+  } catch(e) { console.warn('Sync error', e); }
+}
+
+async function deleteP(id) {
+  if (!confirm('¿Eliminar este perfume?')) return;
+  db = db.filter(x => x.id !== id);
+  closeModal(); render(); backup();
+  try {
+    await fetch(API + '?id=eq.' + id, { method:'DELETE', headers: headers() });
+  } catch(e) { console.warn('Sync error', e); }
+}
+
+function showModal(html) {
+  document.getElementById('modal').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  _img = null;
+}
+function onOverlayClick(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+
+loadData();
+</script>
+</body>
+</html>
