@@ -11,17 +11,28 @@
 :root{--cream:#FAF8F4;--warm-white:#F5F1EA;--parchment:#EDE8DE;--rose:#C9A99A;--dusty-rose:#A67C72;--deep:#3D2B26;--text:#4A3530;--muted:#8C736D;--light-border:#DDD5C8;--gold:#B89A7A}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+/* HEADER */
 .site-header{background:var(--deep);padding:2rem 1.5rem 1.5rem;text-align:center;position:relative;overflow:hidden}
 .site-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(184,154,122,0.25) 0%,transparent 70%);pointer-events:none}
 .header-ornament{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;display:block}
 .site-header h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:32px;letter-spacing:0.15em;color:#FAF8F4;text-transform:uppercase}
 .header-line{width:40px;height:1px;background:var(--gold);margin:10px auto 0}
+
+/* STATS */
 .stats-bar{display:flex;justify-content:center;background:var(--warm-white);border-bottom:1px solid var(--light-border)}
 .stat-item{flex:1;max-width:160px;padding:14px 8px;text-align:center;border-right:1px solid var(--light-border)}
 .stat-item:last-child{border-right:none}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--deep);line-height:1}
 .stat-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
-.toolbar{padding:1rem 1.25rem;display:flex;gap:8px;align-items:center;background:var(--cream);border-bottom:1px solid var(--light-border)}
+
+/* SYNC */
+.sync-bar{text-align:center;font-size:11px;letter-spacing:0.06em;padding:6px;background:#f0ede6;color:var(--muted);border-bottom:1px solid var(--light-border)}
+.sync-bar.syncing{color:var(--gold)}
+.sync-bar.error{color:#C0604A;background:#FDF0EC}
+
+/* TOOLBAR */
+.toolbar{padding:1rem 1.25rem 0.75rem;display:flex;gap:8px;align-items:center;background:var(--cream);border-bottom:none}
 .search-wrap{flex:1;position:relative}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
 .toolbar input{width:100%;height:40px;border:1px solid var(--light-border);border-radius:20px;padding:0 14px 0 36px;font-size:14px;font-family:'Jost',sans-serif;background:white;color:var(--text);outline:none;transition:border-color 0.2s}
@@ -29,31 +40,43 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min
 .toolbar input::placeholder{color:var(--muted)}
 .btn-add{height:40px;width:40px;border-radius:50%;border:none;background:var(--deep);color:white;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;line-height:1}
 .btn-add:hover{background:var(--dusty-rose)}
-.sync-bar{text-align:center;font-size:11px;letter-spacing:0.06em;padding:6px;background:#f0ede6;color:var(--muted);border-bottom:1px solid var(--light-border)}
-.sync-bar.syncing{color:var(--gold)}
-.sync-bar.error{color:#C0604A;background:#FDF0EC}
+
+/* GÉNERO TABS */
+.gender-tabs{display:flex;padding:0 1.25rem;background:var(--cream);border-bottom:1px solid var(--light-border);gap:0}
+.gtab{flex:1;padding:10px 4px;text-align:center;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;font-family:'Jost',sans-serif;background:none;border-top:none;border-left:none;border-right:none}
+.gtab.active{color:var(--deep);border-bottom-color:var(--deep);font-weight:500}
+.gtab:hover:not(.active){color:var(--dusty-rose);border-bottom-color:var(--rose)}
+
+/* AROMA FILTERS */
+.aroma-bar{padding:10px 1.25rem;background:var(--cream);border-bottom:1px solid var(--light-border);display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.aroma-bar::-webkit-scrollbar{display:none}
+.aroma-chip{flex-shrink:0;height:28px;padding:0 12px;border-radius:14px;border:1px solid var(--light-border);background:white;color:var(--muted);font-size:11px;font-family:'Cormorant Garamond',serif;font-style:italic;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.aroma-chip.active{background:var(--deep);border-color:var(--deep);color:white}
+.aroma-chip:hover:not(.active){border-color:var(--rose);color:var(--dusty-rose)}
+
+/* GRID */
 .grid{padding:1.25rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:14px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}}
 .card{background:white;border:1px solid var(--light-border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;display:flex;flex-direction:column}
 .card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(61,43,38,0.1)}
-.card-photo{width:100%;aspect-ratio:1;background:var(--parchment);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.card-photo{width:100%;aspect-ratio:1;background:var(--parchment);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;position:relative}
 .card-photo img{width:100%;height:100%;object-fit:cover;display:block}
 .card-photo .no-img{font-size:38px;opacity:0.5}
+.gender-badge{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;border:1px solid rgba(255,255,255,0.6)}
+.gb-mujer{background:#F5E6E8;color:#9B5563}
+.gb-hombre{background:#E6EDF5;color:#3A5A7A}
+.gb-unisex{background:#EDE8DE;color:#6B5E4A}
 .card-body{padding:12px 12px 14px;display:flex;flex-direction:column;flex:1}
-.card-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--deep);margin-bottom:1px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-place{font-size:10px;letter-spacing:0.06em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-tonos{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--deep);margin-bottom:4px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-tonos{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
 .card-tono{background:var(--warm-white);border:1px solid var(--light-border);border-radius:20px;padding:2px 8px;font-size:10px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--text);white-space:nowrap}
-.card-equiv{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-divider{height:1px;background:var(--light-border);margin-bottom:8px;margin-top:auto}
-.card-prices{display:flex;justify-content:space-between;align-items:center}
-.price-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
-.price-val{font-size:13px;font-weight:500;color:var(--deep)}
-.price-val.sell{color:var(--dusty-rose)}
+.card-equiv{font-size:11px;color:var(--muted);font-style:italic;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .empty-state{grid-column:1/-1;text-align:center;padding:4rem 2rem}
 .empty-icon{font-size:52px;margin-bottom:16px;opacity:0.45}
 .empty-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:var(--muted);margin-bottom:6px}
 .empty-sub{font-size:13px;color:var(--muted)}
+
+/* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(30,18,15,0.5);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
 .overlay.open{display:flex}
 @media(min-width:600px){.overlay{align-items:center}}
@@ -66,6 +89,8 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min
 .modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--deep);letter-spacing:0.04em}
 .btn-close{width:32px;height:32px;border-radius:50%;border:1px solid var(--light-border);background:white;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .modal-body{padding:1.25rem 1.5rem 1.5rem}
+
+/* FORM */
 .img-upload{width:100%;height:130px;border:1.5px dashed var(--light-border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:1.25rem;position:relative;overflow:hidden;background:var(--warm-white);transition:border-color 0.2s;gap:6px}
 .img-upload:hover{border-color:var(--rose)}
 .img-upload img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -74,10 +99,11 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:500}
-.field input,.field textarea{width:100%;border:1px solid var(--light-border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Jost',sans-serif;background:white;color:var(--text);outline:none;transition:border-color 0.2s}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--light-border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Jost',sans-serif;background:white;color:var(--text);outline:none;transition:border-color 0.2s;appearance:none}
 .field input{height:42px}
+.field select{height:42px;cursor:pointer}
 .field textarea{height:70px;resize:none;line-height:1.5}
-.field input:focus,.field textarea:focus{border-color:var(--rose)}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--rose)}
 .field-hint{font-size:11px;color:var(--muted);margin-top:4px}
 .section-divider{display:flex;align-items:center;gap:10px;margin:18px 0 14px}
 .section-divider span{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
@@ -90,11 +116,14 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min
 .btn-primary:hover{background:var(--dusty-rose)}
 .btn-danger{background:white;border:1px solid #F0C4B8;color:#C0604A;max-width:110px}
 .btn-danger:hover{background:#FDF0EC}
+
+/* DETAIL */
 .detail-photo{width:100%;height:200px;background:var(--parchment);display:flex;align-items:center;justify-content:center;font-size:64px;overflow:hidden}
 .detail-photo img{width:100%;height:100%;object-fit:cover}
 .detail-body{padding:1.25rem 1.5rem}
-.detail-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--deep);margin-bottom:4px}
-.detail-place{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem}
+.detail-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--deep);margin-bottom:2px}
+.detail-gender-row{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem}
+.detail-gender{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .detail-card{background:white;border:1px solid var(--light-border);border-radius:10px;padding:12px 14px}
 .detail-card.full{grid-column:1/-1}
@@ -109,38 +138,81 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min
 .detail-info-text{font-size:14px;color:var(--text);line-height:1.6;font-style:italic}
 .tonos-tags{display:flex;flex-wrap:wrap;gap:6px}
 .tono-tag{background:var(--warm-white);border:1px solid var(--light-border);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--text);font-family:'Cormorant Garamond',serif;font-style:italic}
+
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--light-border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+
 <header class="site-header">
   <span class="header-ornament">✦ Colección ✦</span>
   <h1>Inventario de Perfumes</h1>
   <div class="header-line"></div>
 </header>
+
 <div class="stats-bar">
   <div class="stat-item"><div class="stat-num" id="s-total">—</div><div class="stat-label">Perfumes</div></div>
   <div class="stat-item"><div class="stat-num" id="s-units">—</div><div class="stat-label">Unidades</div></div>
   <div class="stat-item"><div class="stat-num" id="s-value">—</div><div class="stat-label">Valor total</div></div>
 </div>
+
 <div id="sync-bar" class="sync-bar syncing"><span class="spinner"></span>Conectando…</div>
+
 <div class="toolbar">
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
-    <input type="search" id="search" placeholder="Buscar perfume…" oninput="render()">
+    <input type="search" id="search" placeholder="Buscar perfume…" oninput="onFilter()">
   </div>
   <button class="btn-add" onclick="openAdd()" title="Agregar perfume">+</button>
 </div>
+
+<!-- PESTAÑAS GÉNERO -->
+<div class="gender-tabs">
+  <button class="gtab active" data-g="todos" onclick="setGender('todos')">Todos</button>
+  <button class="gtab" data-g="mujer" onclick="setGender('mujer')">Mujer</button>
+  <button class="gtab" data-g="hombre" onclick="setGender('hombre')">Hombre</button>
+  <button class="gtab" data-g="unisex" onclick="setGender('unisex')">Unisex</button>
+</div>
+
+<!-- FILTROS AROMA -->
+<div class="aroma-bar" id="aroma-bar"></div>
+
 <div class="grid" id="grid"></div>
+
 <div class="overlay" id="overlay" onclick="onOverlayClick(event)">
   <div class="modal" id="modal"></div>
 </div>
+
 <script>
 const SUPABASE_URL='https://mfypcysouhzuwivkbolj.supabase.co';
 const SUPABASE_KEY='sb_publishable_hrMdC9yZ-iYu2ILJfMFcaA_xPTZzO3p';
 const API=SUPABASE_URL+'/rest/v1/perfumes';
+
 let db=[],_img=null;
+let activeGender='todos';
+let activeAroma='todos';
+
+// Familias de aromas predefinidas para agrupar notas
+const AROMA_FAMILIES={
+  'Floral':['floral','flores','rosa','jazmín','jazmin','lirio','violeta','peonia','peonía','magnolia','lavanda','geranio','neroli','ylang'],
+  'Amaderado':['amaderado','madera','cedro','sándalo','sandalo','vetiver','patchouli','pachulí','oud','roble'],
+  'Oriental':['oriental','vainilla','ámbar','amber','benjuí','incienso','especias','canela','cardamomo','clavo'],
+  'Frutal':['frutal','fruta','manzana','pera','durazno','melocotón','melocoton','fresa','frambuesa','ciruela','mango','papaya','cítrico','citrico','limón','limon','naranja','bergamota','pomelo'],
+  'Acuático':['acuático','acuatico','marino','océano','oceano','brisa','agua','fresco','fresca'],
+  'Almizclado':['almizcle','almizclado','musk','musgo','animal'],
+  'Gourmand':['gourmand','chocolate','caramelo','miel','café','cafe','almendra','coco','avainillado'],
+  'Verde':['verde','herbáceo','herbaceo','hierba','heno','tea','té','bambú','bambu'],
+};
+
+function detectFamily(tonos){
+  if(!tonos)return null;
+  const lower=tonos.toLowerCase();
+  for(const[family,keywords]of Object.entries(AROMA_FAMILIES)){
+    if(keywords.some(k=>lower.includes(k)))return family;
+  }
+  return null;
+}
 
 function headers(extra){return Object.assign({'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},extra||{})}
 
@@ -150,17 +222,16 @@ async function loadData(){
   try{
     setSyncBar('syncing','Cargando perfumes…');
     const res=await fetch(API+'?order=created_at.desc',{headers:headers()});
-    if(!res.ok)throw new Error('Error '+res.status);
+    if(!res.ok)throw new Error();
     db=await res.json();
     setSyncBar('','✦ Sincronizado');
     setTimeout(()=>{document.getElementById('sync-bar').style.display='none'},2000);
-    render();
   }catch(e){
     setSyncBar('error','⚠ Sin conexión — mostrando datos locales');
     const local=localStorage.getItem('perfumes_backup');
     db=local?JSON.parse(local):[];
-    render();
   }
+  render();
 }
 
 function backup(){localStorage.setItem('perfumes_backup',JSON.stringify(db))}
@@ -174,8 +245,7 @@ function compressImage(file){
     reader.onload=ev=>{
       const img=new Image();
       img.onload=()=>{
-        const MAX=600;
-        let w=img.width,h=img.height;
+        const MAX=600;let w=img.width,h=img.height;
         if(w>h){if(w>MAX){h=h*MAX/w;w=MAX}}else{if(h>MAX){w=w*MAX/h;h=MAX}}
         const canvas=document.createElement('canvas');
         canvas.width=Math.round(w);canvas.height=Math.round(h);
@@ -188,49 +258,124 @@ function compressImage(file){
   });
 }
 
-function render(){
+function setGender(g){
+  activeGender=g;
+  activeAroma='todos';
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.toggle('active',t.dataset.g===g));
+  render();
+}
+
+function setAroma(a){
+  activeAroma=a;
+  document.querySelectorAll('.aroma-chip').forEach(c=>c.classList.toggle('active',c.dataset.a===a));
+  renderGrid();
+}
+
+function onFilter(){
+  activeAroma='todos';
+  render();
+}
+
+function getFiltered(){
   const q=(document.getElementById('search').value||'').toLowerCase();
-  const list=q?db.filter(p=>(p.name+p.place+(p.tonos||'')+(p.equivalencia||'')).toLowerCase().includes(q)):db;
+  let list=db;
+  if(activeGender!=='todos')list=list.filter(p=>(p.genero||'').toLowerCase()===activeGender);
+  if(q)list=list.filter(p=>(p.name+(p.tonos||'')+(p.equivalencia||'')).toLowerCase().includes(q));
+  return list;
+}
+
+function buildAromaBar(list){
+  // Detectar familias presentes en la lista actual
+  const present=new Set();
+  list.forEach(p=>{
+    const f=detectFamily(p.tonos);
+    if(f)present.add(f);
+  });
+  const bar=document.getElementById('aroma-bar');
+  if(present.size===0){bar.innerHTML='';bar.style.display='none';return;}
+  bar.style.display='flex';
+  const chips=[{a:'todos',label:'Todas'},...[...present].map(f=>({a:f,label:f}))];
+  bar.innerHTML=chips.map(c=>`<button class="aroma-chip${c.a===activeAroma?' active':''}" data-a="${c.a}" onclick="setAroma('${c.a}')">${c.label}</button>`).join('');
+}
+
+function render(){
+  const list=getFiltered();
+  buildAromaBar(list);
+  // stats siempre sobre db completo
   const total=db.length;
   const units=db.reduce((s,p)=>s+(+p.units||0),0);
   const val=db.reduce((s,p)=>s+(+p.sell||0)*(+p.units||0),0);
   document.getElementById('s-total').textContent=total;
   document.getElementById('s-units').textContent=units;
   document.getElementById('s-value').textContent=val>=1000000?'$'+(val/1000000).toFixed(1)+'M':fmt(val);
+  renderGrid();
+}
+
+function renderGrid(){
+  const list=getFiltered();
+  let filtered=list;
+  if(activeAroma!=='todos'){
+    filtered=list.filter(p=>detectFamily(p.tonos)===activeAroma);
+  }
   const grid=document.getElementById('grid');
-  if(!list.length){
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🌸</div><div class="empty-title">${q?'Sin resultados':'Tu colección está vacía'}</div><div class="empty-sub">${q?'Intenta con otro nombre':'Toca + para agregar tu primer perfume'}</div></div>`;
+  const q=(document.getElementById('search').value||'').trim();
+  if(!filtered.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🌸</div><div class="empty-title">${q||activeAroma!=='todos'?'Sin resultados':'Tu colección está vacía'}</div><div class="empty-sub">${q||activeAroma!=='todos'?'Prueba con otro filtro':'Toca + para agregar tu primer perfume'}</div></div>`;
     return;
   }
-  grid.innerHTML=list.map(p=>{
-    const photo=p.img?`<div class="card-photo"><img src="${p.img}" alt="${escHtml(p.name)}" loading="lazy"></div>`:`<div class="card-photo"><span class="no-img">🍶</span></div>`;
+  grid.innerHTML=filtered.map(p=>{
+    const photo=p.img?`<div class="card-photo"><img src="${p.img}" alt="${escHtml(p.name)}" loading="lazy">${genderBadge(p.genero)}</div>`:`<div class="card-photo"><span class="no-img">🍶</span>${genderBadge(p.genero)}</div>`;
     const tonosHtml=p.tonos?`<div class="card-tonos">${p.tonos.split(',').map(t=>t.trim()).filter(Boolean).slice(0,4).map(t=>`<span class="card-tono">${escHtml(t)}</span>`).join('')}</div>`:'';
     const equivHtml=p.equivalencia?`<div class="card-equiv">≈ ${escHtml(p.equivalencia)}</div>`:'';
-    return`<div class="card" onclick="openDetail('${p.id}')">${photo}<div class="card-body"><div class="card-name">${escHtml(p.name)}</div><div class="card-place">${escHtml(p.place||'—')}</div>${tonosHtml}${equivHtml}<div class="card-divider"></div><div class="card-prices"><div><div class="price-label">Compra</div><div class="price-val">${fmt(p.buy)}</div></div><div style="text-align:right"><div class="price-label">Venta</div><div class="price-val sell">${fmt(p.sell)}</div></div></div></div></div>`;
+    return`<div class="card" onclick="openDetail('${p.id}')">${photo}<div class="card-body"><div class="card-name">${escHtml(p.name)}</div>${tonosHtml}${equivHtml}</div></div>`;
   }).join('');
 }
 
+function genderBadge(g){
+  if(!g)return'';
+  const map={mujer:{cls:'gb-mujer',icon:'♀'},hombre:{cls:'gb-hombre',icon:'♂'},unisex:{cls:'gb-unisex',icon:'◈'}};
+  const m=map[g];
+  if(!m)return'';
+  return`<span class="gender-badge ${m.cls}">${m.icon}</span>`;
+}
+
+function genderLabel(g){
+  return g==='mujer'?'Mujer':g==='hombre'?'Hombre':g==='unisex'?'Unisex':'—';
+}
+
 function formBody(p){
+  const gv=p?(p.genero||''):'';
   return`
     <div class="img-upload" onclick="document.getElementById('imgfile').click()">
       ${p&&p.img?`<img src="${p.img}">`:'<span class="upload-icon">📷</span>'}
       <span class="upload-label" id="uplbl">${p&&p.img?'Cambiar foto':'Agregar foto'}</span>
     </div>
     <input type="file" id="imgfile" accept="image/*" style="display:none" onchange="previewImg(event)">
-    <div class="field"><label>Nombre del perfume</label><input id="f-name" placeholder="Ej: Chanel N°5" value="${p?escHtml(p.name):''}"></div>
+    <div class="form-row">
+      <div class="field" style="grid-column:1/-1"><label>Nombre del perfume</label><input id="f-name" placeholder="Ej: Chanel N°5" value="${p?escHtml(p.name):''}"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Género</label>
+        <select id="f-genero">
+          <option value="" ${!gv?'selected':''}>— Seleccionar —</option>
+          <option value="mujer" ${gv==='mujer'?'selected':''}>Mujer</option>
+          <option value="hombre" ${gv==='hombre'?'selected':''}>Hombre</option>
+          <option value="unisex" ${gv==='unisex'?'selected':''}>Unisex</option>
+        </select>
+      </div>
+      <div class="field"><label>Unidades</label><input id="f-units" type="number" placeholder="0" min="0" value="${p?p.units:''}"></div>
+    </div>
+    <div class="section-divider"><span>Precio y origen</span></div>
     <div class="form-row">
       <div class="field"><label>Valor compra</label><input id="f-buy" type="number" placeholder="0" value="${p?p.buy:''}"></div>
       <div class="field"><label>Valor venta</label><input id="f-sell" type="number" placeholder="0" value="${p?p.sell:''}"></div>
     </div>
-    <div class="form-row">
-      <div class="field"><label>Lugar de compra</label><input id="f-place" placeholder="Ej: Falabella" value="${p?escHtml(p.place||''):''}"></div>
-      <div class="field"><label>Unidades</label><input id="f-units" type="number" placeholder="0" min="0" value="${p?p.units:''}"></div>
-    </div>
+    <div class="field"><label>Lugar de compra</label><input id="f-place" placeholder="Ej: Falabella" value="${p?escHtml(p.place||''):''}"></div>
     <div class="section-divider"><span>Fragancia</span></div>
     <div class="field">
       <label>Tonos / Notas</label>
       <textarea id="f-tonos" placeholder="Ej: Floral, vainilla, almizcle, madera">${p?escHtml(p.tonos||''):''}</textarea>
-      <div class="field-hint">Separa con comas para que aparezcan como etiquetas</div>
+      <div class="field-hint">Separa con comas — se usarán para agrupar por familia de aroma</div>
     </div>
     <div class="field">
       <label>Equivalencia con diseñador</label>
@@ -242,19 +387,18 @@ function openAdd(){_img=null;showModal(`<div class="modal-handle"></div><div cla
 
 async function previewImg(e){
   const f=e.target.files[0];if(!f)return;
-  const label=document.getElementById('uplbl');
-  if(label)label.textContent='Procesando…';
+  const label=document.getElementById('uplbl');if(label)label.textContent='Procesando…';
   _img=await compressImage(f);
   const box=document.querySelector('.img-upload');
   let img=box.querySelector('img');
   if(!img){img=document.createElement('img');box.prepend(img)}
-  img.src=_img;
-  if(label)label.textContent='Cambiar foto';
+  img.src=_img;if(label)label.textContent='Cambiar foto';
 }
 
 function getFormData(){
   return{
     name:document.getElementById('f-name').value.trim(),
+    genero:document.getElementById('f-genero').value,
     buy:Number(document.getElementById('f-buy').value)||0,
     sell:Number(document.getElementById('f-sell').value)||0,
     place:document.getElementById('f-place').value.trim(),
@@ -270,19 +414,34 @@ async function saveNew(){
   if(!data.name){document.getElementById('f-name').focus();return}
   const item=Object.assign({id:uid()},data);
   closeModal();db.unshift(item);render();backup();
-  try{
-    const res=await fetch(API,{method:'POST',headers:headers({'Prefer':'return=minimal'}),body:JSON.stringify(item)});
-    if(!res.ok){const err=await res.text();console.error('Save error:',err)}
-  }catch(e){console.warn('Sync error',e)}
+  try{await fetch(API,{method:'POST',headers:headers({'Prefer':'return=minimal'}),body:JSON.stringify(item)})}catch(e){console.warn(e)}
 }
 
 function openDetail(id){
   const p=db.find(x=>x.id===id);if(!p)return;
   const profit=(+p.sell||0)-(+p.buy||0);
   const photo=p.img?`<div class="detail-photo"><img src="${p.img}" alt="${escHtml(p.name)}"></div>`:`<div class="detail-photo">🍶</div>`;
+  const gLabel=p.genero?genderLabel(p.genero):'';
   const tonosHtml=p.tonos?`<div class="detail-info-block"><div class="detail-card-label">Tonos y notas</div><div class="tonos-tags">${p.tonos.split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="tono-tag">${escHtml(t)}</span>`).join('')}</div></div>`:'';
   const equivHtml=p.equivalencia?`<div class="detail-info-block"><div class="detail-card-label">Equivalencia con diseñador</div><div class="detail-info-text">${escHtml(p.equivalencia)}</div></div>`:'';
-  showModal(`<div class="modal-handle"></div>${photo}<div class="detail-body"><div class="detail-name">${escHtml(p.name)}</div><div class="detail-place">${escHtml(p.place||'—')}</div><div class="detail-grid"><div class="detail-card"><div class="detail-card-label">Valor compra</div><div class="detail-card-val">${fmt(p.buy)}</div></div><div class="detail-card"><div class="detail-card-label">Valor venta</div><div class="detail-card-val profit-val">${fmt(p.sell)}</div></div><div class="detail-card"><div class="detail-card-label">Unidades</div><div class="detail-card-val">${p.units||0}</div></div><div class="detail-card"><div class="detail-card-label">Ganancia unit.</div><div class="detail-card-val profit-val">${fmt(profit)}</div></div><div class="detail-card full accent"><div class="detail-card-label">Valor total en stock</div><div class="detail-card-val">${fmt((+p.sell||0)*(+p.units||0))}</div></div></div>${tonosHtml}${equivHtml}</div><div class="modal-footer"><button class="btn btn-danger" onclick="deleteP('${p.id}')">Eliminar</button><button class="btn btn-ghost" onclick="closeModal()">Cerrar</button><button class="btn btn-primary" onclick="openEdit('${p.id}')">Editar</button></div>`);
+  showModal(`<div class="modal-handle"></div>${photo}<div class="detail-body">
+    <div class="detail-name">${escHtml(p.name)}</div>
+    <div class="detail-gender-row">${gLabel?`<span class="detail-gender">${gLabel}</span>`:''}${p.genero?genderBadge(p.genero):''}</div>
+    <div class="detail-grid">
+      <div class="detail-card"><div class="detail-card-label">Valor compra</div><div class="detail-card-val">${fmt(p.buy)}</div></div>
+      <div class="detail-card"><div class="detail-card-label">Valor venta</div><div class="detail-card-val profit-val">${fmt(p.sell)}</div></div>
+      <div class="detail-card"><div class="detail-card-label">Lugar de compra</div><div class="detail-card-val" style="font-size:15px">${escHtml(p.place||'—')}</div></div>
+      <div class="detail-card"><div class="detail-card-label">Unidades</div><div class="detail-card-val">${p.units||0}</div></div>
+      <div class="detail-card"><div class="detail-card-label">Ganancia unit.</div><div class="detail-card-val profit-val">${fmt(profit)}</div></div>
+      <div class="detail-card full accent"><div class="detail-card-label">Valor total en stock</div><div class="detail-card-val">${fmt((+p.sell||0)*(+p.units||0))}</div></div>
+    </div>
+    ${tonosHtml}${equivHtml}
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" onclick="deleteP('${p.id}')">Eliminar</button>
+    <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>
+    <button class="btn btn-primary" onclick="openEdit('${p.id}')">Editar</button>
+  </div>`);
 }
 
 function openEdit(id){
@@ -297,14 +456,14 @@ async function saveEdit(id){
   const i=db.findIndex(x=>x.id===id);
   if(i>-1)db[i]=Object.assign({},db[i],data);
   closeModal();render();backup();
-  try{await fetch(API+'?id=eq.'+id,{method:'PATCH',headers:headers({'Prefer':'return=minimal'}),body:JSON.stringify(data)})}catch(e){console.warn('Sync error',e)}
+  try{await fetch(API+'?id=eq.'+id,{method:'PATCH',headers:headers({'Prefer':'return=minimal'}),body:JSON.stringify(data)})}catch(e){console.warn(e)}
 }
 
 async function deleteP(id){
   if(!confirm('¿Eliminar este perfume?'))return;
   db=db.filter(x=>x.id!==id);
   closeModal();render();backup();
-  try{await fetch(API+'?id=eq.'+id,{method:'DELETE',headers:headers()})}catch(e){console.warn('Sync error',e)}
+  try{await fetch(API+'?id=eq.'+id,{method:'DELETE',headers:headers()})}catch(e){console.warn(e)}
 }
 
 function showModal(html){document.getElementById('modal').innerHTML=html;document.getElementById('overlay').classList.add('open')}
